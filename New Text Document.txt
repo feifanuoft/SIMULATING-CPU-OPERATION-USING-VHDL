@@ -1,0 +1,936 @@
+-- "OR r5, r2, r4"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+			PC_out_tb <= '0';
+			z_lo_out_tb <= '0';   
+			MDR_out_tb <= '0';  
+			r02_out_tb <= '0';   
+			r04_out_tb <= '0';   
+			MDR_in_tb <= '0';   
+			Zin_tb <= '0';  
+			PCin_tb <='0';   
+			MDR_in_tb <= '0';   
+			IRin_tb  <= '0';   
+			Yin_tb <= '0';  
+			IncPC_tb <= '0';  
+			Read_tb <= '0';  
+			AND_tb <= '0';
+			R2in_tb <= '0';
+			R4in_tb <= '0';  
+			R5in_tb <= '0';
+			MData_in_tb <= x"00000000"; 
+
+		WHEN Reg_load1a=> 
+			MData_in_tb <= x"00000022";
+			Read_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25 ns; 					--the first zero is there for completeness
+			MDR_in_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25ns;
+
+		WHEN Reg_load1b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R2in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R2 with the value $22
+
+		WHEN Reg_load2a=> 
+			MData_in_tb <= x"00000024";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load2b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R4in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;				--initialize R4 with the value $24 
+
+		WHEN Reg_load3a=> 
+			MData_in_tb <= x"00000026";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load3b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R5in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R5 with the value $26 
+
+		WHEN T0 =>							--see if you need to de-assertthese 
+			PC_out_tb<= '1';
+			MDR_in_tb<= '1';
+			IncPC_tb<= '1';
+			Zin_tb <= '1';
+
+		WHEN T1=>
+			z_lo_out_tb <= '1';   
+			PCin_tb <= '1';   
+			Read_tb <= '1';   
+			MDR_in_tb <='1';
+			MData_in_tb<= x"52920000";   		--opcode for "OR R5, R2, R4"
+
+		WHEN T2=>
+			MDR_out_tb <= '1';   
+			IRin_tb <= '1';
+		WHEN T3=>
+			r02_out_tb<= '1'; 
+			Yin_tb <= '1';
+		WHEN T4=>
+			r04_out_tb<= '1'; 
+			OR_tb <= '1';Zin_tb <= '1';
+		WHEN T5 =>
+			z_lo_out_tb <= '1';   
+			R5in_tb <= '1';   
+		WHEN OTHERS =>
+	END CASE;
+END PROCESS;
+
+
+-- "sub r5, r2, r4"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+			PC_out_tb <= '0';
+			z_lo_out_tb <= '0';   
+			MDR_out_tb <= '0';  
+			r02_out_tb <= '0';   
+			r04_out_tb <= '0';   
+			MDR_in_tb <= '0';   
+			Zin_tb <= '0';  
+			PCin_tb <='0';   
+			MDR_in_tb <= '0';   
+			IRin_tb  <= '0';   
+			Yin_tb <= '0';  
+			IncPC_tb <= '0';  
+			Read_tb <= '0';  
+			AND_tb <= '0';
+			R2in_tb <= '0';
+			R4in_tb <= '0';  
+			R5in_tb <= '0';
+			MData_in_tb <= x"00000000"; 
+
+		WHEN Reg_load1a=> 
+			MData_in_tb <= x"00000022";
+			Read_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25 ns; 					--the first zero is there for completeness
+			MDR_in_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25ns;
+
+		WHEN Reg_load1b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R2in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R2 with the value $22
+
+		WHEN Reg_load2a=> 
+			MData_in_tb <= x"00000024";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load2b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R4in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;				--initialize R4 with the value $24 
+
+		WHEN Reg_load3a=> 
+			MData_in_tb <= x"00000026";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load3b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R5in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R5 with the value $26 
+
+		WHEN T0 =>							--see if you need to de-assertthese 
+			PC_out_tb<= '1';
+			MDR_in_tb<= '1';
+			IncPC_tb<= '1';
+			Zin_tb <= '1';
+
+		WHEN T1=>
+			z_lo_out_tb <= '1';   
+			PCin_tb <= '1';   
+			Read_tb <= '1';   
+			MDR_in_tb <='1';
+			MData_in_tb<= x"22920000";   		--opcode for "sub R5, R2, R4"
+
+		WHEN T2=>
+			MDR_out_tb <= '1';   
+			IRin_tb <= '1';
+		WHEN T3=>
+			r02_out_tb<= '1'; 
+			Yin_tb <= '1';
+		WHEN T4=>
+			r04_out_tb<= '1'; 
+			SUB_tb <= '1';Zin_tb <= '1';
+		WHEN T5 =>
+			z_lo_out_tb <= '1';   
+			R5in_tb <= '1';   
+		WHEN OTHERS =>
+	END CASE;
+END PROCESS;
+
+
+-- "mul r2, r4"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+			PC_out_tb <= '0';
+			z_lo_out_tb <= '0';   
+			MDR_out_tb <= '0';  
+			r02_out_tb <= '0';   
+			r04_out_tb <= '0';   
+			MDR_in_tb <= '0';   
+			Zin_tb <= '0';  
+			PCin_tb <='0';   
+			MDR_in_tb <= '0';   
+			IRin_tb  <= '0';   
+			Yin_tb <= '0';  
+			IncPC_tb <= '0';  
+			Read_tb <= '0';  
+			AND_tb <= '0';
+			R2in_tb <= '0';
+			R4in_tb <= '0';  
+			R5in_tb <= '0';
+			MData_in_tb <= x"00000000"; 
+
+		WHEN Reg_load1a=> 
+			MData_in_tb <= x"00000022";
+			Read_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25 ns; 					--the first zero is there for completeness
+			MDR_in_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25ns;
+
+		WHEN Reg_load1b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R2in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R2 with the value $22
+
+		WHEN Reg_load2a=> 
+			MData_in_tb <= x"00000024";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load2b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R4in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;				--initialize R4 with the value $24 
+
+		WHEN Reg_load3a=> 
+			MData_in_tb <= x"00000026";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN T0 =>							--see if you need to de-assertthese 
+			PC_out_tb<= '1';
+			MDR_in_tb<= '1';
+			IncPC_tb<= '1';
+			Zin_tb <= '1';
+
+		WHEN T1=>
+			z_lo_out_tb <= '1';   
+			PCin_tb <= '1';   
+			Read_tb <= '1';   
+			MDR_in_tb <='1';
+			MData_in_tb<= x"71200000";   		--opcode for "mul R2, R4"
+
+		WHEN T2=>
+			MDR_out_tb <= '1';   
+			IRin_tb <= '1';
+
+		WHEN T3=>
+			r02_out_tb<= '1'; 
+			Yin_tb <= '1';
+
+		WHEN T4=>
+			r04_out_tb<= '1'; 
+			MUL_tb <= '1';
+			Zin_tb <= '1';
+
+		WHEN T5 =>
+			z_lo_out_tb <= '1';   
+			Loin_tb <= '1';   
+		
+		WHEN T6 =>
+			z_hi_out_tb <= '1';
+			Hiin_tb <= '1';
+		WHEN OTHERS => NULL;
+	END CASE;
+END PROCESS;
+
+
+-- "div r2, r4"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+			PC_out_tb <= '0';
+			z_lo_out_tb <= '0';   
+			MDR_out_tb <= '0';  
+			r02_out_tb <= '0';   
+			r04_out_tb <= '0';   
+			MDR_in_tb <= '0';   
+			Zin_tb <= '0';  
+			PCin_tb <='0';   
+			MDR_in_tb <= '0';   
+			IRin_tb  <= '0';   
+			Yin_tb <= '0';  
+			IncPC_tb <= '0';  
+			Read_tb <= '0';  
+			AND_tb <= '0';
+			R2in_tb <= '0';
+			R4in_tb <= '0';  
+			R5in_tb <= '0';
+			MData_in_tb <= x"00000000"; 
+
+		WHEN Reg_load1a=> 
+			MData_in_tb <= x"00000022";
+			Read_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25 ns; 					--the first zero is there for completeness
+			MDR_in_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25ns;
+
+		WHEN Reg_load1b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R2in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R2 with the value $22
+
+		WHEN Reg_load2a=> 
+			MData_in_tb <= x"00000024";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load2b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R4in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;				--initialize R4 with the value $24 
+
+		WHEN Reg_load3a=> 
+			MData_in_tb <= x"00000026";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN T0 =>							--see if you need to de-assertthese 
+			PC_out_tb<= '1';
+			MDR_in_tb<= '1';
+			IncPC_tb<= '1';
+			Zin_tb <= '1';
+
+		WHEN T1=>
+			z_lo_out_tb <= '1';   
+			PCin_tb <= '1';   
+			Read_tb <= '1';   
+			MDR_in_tb <='1';
+			MData_in_tb<= x"79200000";   		--opcode for "div R2, R4"
+
+		WHEN T2=>
+			MDR_out_tb <= '1';   
+			IRin_tb <= '1';
+
+		WHEN T3=>
+			r02_out_tb<= '1'; 
+			Yin_tb <= '1';
+
+		WHEN T4=>
+			r04_out_tb<= '1'; 
+			DIV_tb <= '1';
+			Zin_tb <= '1';
+
+		WHEN T5 =>
+			z_lo_out_tb <= '1';   
+			Loin_tb <= '1';   
+		
+		WHEN T6 =>
+			z_hi_out_tb <= '1';
+			Hiin_tb <= '1';
+		WHEN OTHERS => NULL;
+	END CASE;
+END PROCESS;
+
+
+-- "shr r5, r2, r4"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+			PC_out_tb <= '0';
+			z_lo_out_tb <= '0';   
+			MDR_out_tb <= '0';  
+			r02_out_tb <= '0';   
+			r04_out_tb <= '0';   
+			MDR_in_tb <= '0';   
+			Zin_tb <= '0';  
+			PCin_tb <='0';   
+			MDR_in_tb <= '0';   
+			IRin_tb  <= '0';   
+			Yin_tb <= '0';  
+			IncPC_tb <= '0';  
+			Read_tb <= '0';  
+			AND_tb <= '0';
+			R2in_tb <= '0';
+			R4in_tb <= '0';  
+			R5in_tb <= '0';
+			MData_in_tb <= x"00000000"; 
+
+		WHEN Reg_load1a=> 
+			MData_in_tb <= x"00000022";
+			Read_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25 ns; 					--the first zero is there for completeness
+			MDR_in_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25ns;
+
+		WHEN Reg_load1b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R2in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R2 with the value $22
+
+		WHEN Reg_load2a=> 
+			MData_in_tb <= x"00000024";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load2b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R4in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;				--initialize R4 with the value $24 
+
+		WHEN Reg_load3a=> 
+			MData_in_tb <= x"00000026";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load3b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R5in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R5 with the value $26 
+
+		WHEN T0 =>							--see if you need to de-assertthese 
+			PC_out_tb<= '1';
+			MDR_in_tb<= '1';
+			IncPC_tb<= '1';
+			Zin_tb <= '1';
+
+		WHEN T1=>
+			z_lo_out_tb <= '1';   
+			PCin_tb <= '1';   
+			Read_tb <= '1';   
+			MDR_in_tb <='1';
+			MData_in_tb<= x"2A920000";   		--opcode for "SHR R5, R2, R4"
+
+		WHEN T2=>
+			MDR_out_tb <= '1';   
+			IRin_tb <= '1';
+		WHEN T3=>
+			r02_out_tb<= '1'; 
+			Yin_tb <= '1';
+		WHEN T4=>
+			SHR_tb <= '1';
+			Zin_tb <= '1';
+		WHEN T5 =>
+			z_lo_out_tb <= '1';   
+			R5in_tb <= '1';   
+		WHEN OTHERS =>
+	END CASE;
+END PROCESS;
+
+
+-- "shl r5, r2, r4"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+			PC_out_tb <= '0';
+			z_lo_out_tb <= '0';   
+			MDR_out_tb <= '0';  
+			r02_out_tb <= '0';   
+			r04_out_tb <= '0';   
+			MDR_in_tb <= '0';   
+			Zin_tb <= '0';  
+			PCin_tb <='0';   
+			MDR_in_tb <= '0';   
+			IRin_tb  <= '0';   
+			Yin_tb <= '0';  
+			IncPC_tb <= '0';  
+			Read_tb <= '0';  
+			AND_tb <= '0';
+			R2in_tb <= '0';
+			R4in_tb <= '0';  
+			R5in_tb <= '0';
+			MData_in_tb <= x"00000000"; 
+
+		WHEN Reg_load1a=> 
+			MData_in_tb <= x"00000022";
+			Read_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25 ns; 					--the first zero is there for completeness
+			MDR_in_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25ns;
+
+		WHEN Reg_load1b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R2in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R2 with the value $22
+
+		WHEN Reg_load2a=> 
+			MData_in_tb <= x"00000024";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load2b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R4in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;				--initialize R4 with the value $24 
+
+		WHEN Reg_load3a=> 
+			MData_in_tb <= x"00000026";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load3b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R5in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R5 with the value $26 
+
+		WHEN T0 =>							--see if you need to de-assertthese 
+			PC_out_tb<= '1';
+			MDR_in_tb<= '1';
+			IncPC_tb<= '1';
+			Zin_tb <= '1';
+
+		WHEN T1=>
+			z_lo_out_tb <= '1';   
+			PCin_tb <= '1';   
+			Read_tb <= '1';   
+			MDR_in_tb <='1';
+			MData_in_tb<= x"32920000";   		--opcode for "SHL R5, R2, R4"
+
+		WHEN T2=>
+			MDR_out_tb <= '1';   
+			IRin_tb <= '1';
+		WHEN T3=>
+			r02_out_tb<= '1'; 
+			Yin_tb <= '1';
+		WHEN T4=>
+			SHL_tb <= '1';
+			Zin_tb <= '1';
+		WHEN T5 =>
+			z_lo_out_tb <= '1';   
+			R5in_tb <= '1';   
+		WHEN OTHERS =>
+	END CASE;
+END PROCESS;
+
+-- "ror r5, r2, r4"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+			PC_out_tb <= '0';
+			z_lo_out_tb <= '0';   
+			MDR_out_tb <= '0';  
+			r02_out_tb <= '0';   
+			r04_out_tb <= '0';   
+			MDR_in_tb <= '0';   
+			Zin_tb <= '0';  
+			PCin_tb <='0';   
+			MDR_in_tb <= '0';   
+			IRin_tb  <= '0';   
+			Yin_tb <= '0';  
+			IncPC_tb <= '0';  
+			Read_tb <= '0';  
+			AND_tb <= '0';
+			R2in_tb <= '0';
+			R4in_tb <= '0';  
+			R5in_tb <= '0';
+			MData_in_tb <= x"00000000"; 
+
+		WHEN Reg_load1a=> 
+			MData_in_tb <= x"00000022";
+			Read_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25 ns; 					--the first zero is there for completeness
+			MDR_in_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25ns;
+
+		WHEN Reg_load1b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R2in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R2 with the value $22
+
+		WHEN Reg_load2a=> 
+			MData_in_tb <= x"00000024";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load2b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R4in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;				--initialize R4 with the value $24 
+
+		WHEN Reg_load3a=> 
+			MData_in_tb <= x"00000026";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load3b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R5in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R5 with the value $26 
+
+		WHEN T0 =>							--see if you need to de-assertthese 
+			PC_out_tb<= '1';
+			MDR_in_tb<= '1';
+			IncPC_tb<= '1';
+			Zin_tb <= '1';
+
+		WHEN T1=>
+			z_lo_out_tb <= '1';   
+			PCin_tb <= '1';   
+			Read_tb <= '1';   
+			MDR_in_tb <='1';
+			MData_in_tb<= x"3A920000";   		--opcode for "ror R5, R2, R4"
+
+		WHEN T2=>
+			MDR_out_tb <= '1';   
+			IRin_tb <= '1';
+		WHEN T3=>
+			r02_out_tb<= '1'; 
+			Yin_tb <= '1';
+		WHEN T4=>
+			ROR_tb <= '1';
+			Zin_tb <= '1';
+		WHEN T5 =>
+			z_lo_out_tb <= '1';   
+			R5in_tb <= '1';   
+		WHEN OTHERS =>
+	END CASE;
+END PROCESS;
+
+
+-- "rol r5, r2, r4"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+			PC_out_tb <= '0';
+			z_lo_out_tb <= '0';   
+			MDR_out_tb <= '0';  
+			r02_out_tb <= '0';   
+			r04_out_tb <= '0';   
+			MDR_in_tb <= '0';   
+			Zin_tb <= '0';  
+			PCin_tb <='0';   
+			MDR_in_tb <= '0';   
+			IRin_tb  <= '0';   
+			Yin_tb <= '0';  
+			IncPC_tb <= '0';  
+			Read_tb <= '0';  
+			AND_tb <= '0';
+			R2in_tb <= '0';
+			R4in_tb <= '0';  
+			R5in_tb <= '0';
+			MData_in_tb <= x"00000000"; 
+
+		WHEN Reg_load1a=> 
+			MData_in_tb <= x"00000022";
+			Read_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25 ns; 					--the first zero is there for completeness
+			MDR_in_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25ns;
+
+		WHEN Reg_load1b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R2in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R2 with the value $22
+
+		WHEN Reg_load2a=> 
+			MData_in_tb <= x"00000024";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load2b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R4in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;				--initialize R4 with the value $24 
+
+		WHEN Reg_load3a=> 
+			MData_in_tb <= x"00000026";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load3b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R5in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R5 with the value $26 
+
+		WHEN T0 =>							--see if you need to de-assertthese 
+			PC_out_tb<= '1';
+			MDR_in_tb<= '1';
+			IncPC_tb<= '1';
+			Zin_tb <= '1';
+
+		WHEN T1=>
+			z_lo_out_tb <= '1';   
+			PCin_tb <= '1';   
+			Read_tb <= '1';   
+			MDR_in_tb <='1';
+			MData_in_tb<= x"42920000";   		--opcode for "rol R5, R2, R4"
+
+		WHEN T2=>
+			MDR_out_tb <= '1';   
+			IRin_tb <= '1';
+		WHEN T3=>
+			r02_out_tb<= '1'; 
+			Yin_tb <= '1';
+		WHEN T4=>
+			ROL_tb <= '1';
+			Zin_tb <= '1';
+		WHEN T5 =>
+			z_lo_out_tb <= '1';   
+			R5in_tb <= '1';   
+		WHEN OTHERS =>
+	END CASE;
+END PROCESS;
+
+
+-- "neg r5, r2"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+			PC_out_tb <= '0';
+			z_lo_out_tb <= '0';   
+			MDR_out_tb <= '0';  
+			r02_out_tb <= '0';   
+			r04_out_tb <= '0';   
+			MDR_in_tb <= '0';   
+			Zin_tb <= '0';  
+			PCin_tb <='0';   
+			MDR_in_tb <= '0';   
+			IRin_tb  <= '0';   
+			Yin_tb <= '0';  
+			IncPC_tb <= '0';  
+			Read_tb <= '0';  
+			AND_tb <= '0';
+			R2in_tb <= '0';
+			R4in_tb <= '0';  
+			R5in_tb <= '0';
+			MData_in_tb <= x"00000000"; 
+
+		WHEN Reg_load1a=> 
+			MData_in_tb <= x"00000022";
+			Read_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25 ns; 					--the first zero is there for completeness
+			MDR_in_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25ns;
+
+		WHEN Reg_load1b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R2in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R2 with the value $22
+
+		WHEN Reg_load2a=> 
+			MData_in_tb <= x"00000024";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load3a=> 
+			MData_in_tb <= x"00000026";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load3b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R5in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R5 with the value $26 
+
+		WHEN T0 =>							--see if you need to de-assertthese 
+			PC_out_tb<= '1';
+			MDR_in_tb<= '1';
+			IncPC_tb<= '1';
+			Zin_tb <= '1';
+
+		WHEN T1=>
+			z_lo_out_tb <= '1';   
+			PCin_tb <= '1';   
+			Read_tb <= '1';   
+			MDR_in_tb <='1';
+			MData_in_tb<= x"82A00000";   		--opcode for "neg R5, R2"
+
+		WHEN T2=>
+			MDR_out_tb <= '1';   
+			IRin_tb <= '1';
+		WHEN T3=>
+			r02_out_tb<= '1'; 
+			NEG_tb <= '1';
+			Zin_tb <= '1';
+		WHEN T4=>
+			z_lo_out_tb <= '1';   	
+			R5in_tb <= '1';
+		WHEN OTHERS =>
+	END CASE;
+END PROCESS;
+
+
+
+-- "not r5, r2"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+			PC_out_tb <= '0';
+			z_lo_out_tb <= '0';   
+			MDR_out_tb <= '0';  
+			r02_out_tb <= '0';   
+			r04_out_tb <= '0';   
+			MDR_in_tb <= '0';   
+			Zin_tb <= '0';  
+			PCin_tb <='0';   
+			MDR_in_tb <= '0';   
+			IRin_tb  <= '0';   
+			Yin_tb <= '0';  
+			IncPC_tb <= '0';  
+			Read_tb <= '0';  
+			AND_tb <= '0';
+			R2in_tb <= '0';
+			R4in_tb <= '0';  
+			R5in_tb <= '0';
+			MData_in_tb <= x"00000000"; 
+
+		WHEN Reg_load1a=> 
+			MData_in_tb <= x"00000022";
+			Read_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25 ns; 					--the first zero is there for completeness
+			MDR_in_tb <= '0', 
+			'1'after 10 ns, 
+			'0' after 25ns;
+
+		WHEN Reg_load1b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R2in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R2 with the value $22
+
+		WHEN Reg_load2a=> 
+			MData_in_tb <= x"00000024";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load3a=> 
+			MData_in_tb <= x"00000026";
+			Read_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			MDR_in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;
+
+		WHEN Reg_load3b=> 
+			MDR_out_tb <= '1'after 10 ns, 
+			'0' after 25 ns; 
+			R5in_tb <= '1' after 10 ns, 
+			'0' after 25 ns;					--initialize R5 with the value $26 
+
+		WHEN T0 =>							--see if you need to de-assertthese 
+			PC_out_tb<= '1';
+			MDR_in_tb<= '1';
+			IncPC_tb<= '1';
+			Zin_tb <= '1';
+
+		WHEN T1=>
+			z_lo_out_tb <= '1';   
+			PCin_tb <= '1';   
+			Read_tb <= '1';   
+			MDR_in_tb <='1';
+			MData_in_tb<= x"8AA00000";   		--opcode for "not R5, R2"
+
+		WHEN T2=>
+			MDR_out_tb <= '1';   
+			IRin_tb <= '1';
+		WHEN T3=>
+			r02_out_tb<= '1'; 
+			NOT_tb <= '1';
+			Zin_tb <= '1';
+		WHEN T4=>
+			z_lo_out_tb <= '1';   	
+			R5in_tb <= '1';
+		WHEN OTHERS => 
+	END CASE;
+END PROCESS;

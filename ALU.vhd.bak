@@ -1,0 +1,81 @@
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_unsigned.all;
+
+entity ALU is
+port(A,B: in std_logic_vector(31 downto 0);
+		control_signals: in std_logic_vector(11 downto 0);--ADD, SUB,MUL,DIV,SHIFT,ROTATE, SHL,SHR, AND_control, OR_control: in std_logic;
+		C: out std_logic_vector(63 downto 0); --
+		clk: in std_logic
+);
+end ALU;
+
+
+architecture behaviour of ALU is
+
+	procedure booth_mul(variable Ain,Bin :  IN STD_LOGIC_VECTOR(31 downto 0)) is
+	variable result, temp, toResult:  	STD_LOGIC_VECTOR(63 downto 0);
+	variable toAdd, toSub, zeroes : STD_LOGIC_VECTOR(31 downto 0);
+	variable output :  STD_LOGIC_VECTOR(63 DOWNTO 0);
+	begin
+		toAdd := Ain;
+		toSub := (0 - Ain);
+		result := x"0000000000000000";
+		zeroes := x"00000000";
+		for i in 0 to 31 loop
+			if (i = 0) then
+				if (Bin(0) = '1') then
+					toResult(31 downto 0):= toSub;
+				end if;
+			else 
+				if (Bin(i) = '1' and Bin(i-1) = '0') then
+					toResult := zeroes & toSub;
+				elsif (Bin(i) = '0' and Bin(i-1) = '1') then
+					toResult:= zeroes & toAdd;
+				else
+					toResult := zeroes & zeroes;
+				end if;
+			end if;
+			
+		--Sign Extension
+			if (toResult(31) = '1') then
+				toResult(63 downto 32) := x"FFFFFFFF";
+			elsif (toResult(31) = '0') then
+				toResult(63 downto 32) := x"00000000";
+			end if;
+			toResult := STD_LOGIC_VECTOR(SHIFT_LEFT(UNSIGNED(toResult), i));
+			result := result + toResult;
+		end loop;
+		output := result;
+end booth_mul;
+
+begin 
+	process(clk) is
+	--variable unsigned(A), unsigned(B) : std_LOGIC_VECTOR (31 downto 0);
+	--variable TempC : std_LOGIC_VECTOR (63 downto 0); 
+	begin
+	if rising_edge(clk) then
+		case control_signals is 
+			when "000000000100" => c <= std_logic_vector(unsigned(A)+unsigned(B)) + x"0000_0000_0000_0000"; 
+			when "000000000010" => c <= std_logic_vector (unsigned(A) OR unsigned(B))+ x"0000_0000_0000_0000";
+			when "000000000001" => c <= std_logic_vector(0-unsigned(B))+ x"0000_0000_0000_0000";
+			when "100000000000" => c <=  std_logic_vector(unsigned(A) + unsigned(B))+ x"0000_0000_0000_0000"; 
+			when "010000000000" => c <=  std_logic_vector(unsigned(A) - unsigned(B))+ x"0000_0000_0000_0000";
+			when "001000000000" => c <=  std_logic_vector(unsigned(A) srl to_integer (unsigned(B)))+ x"0000_0000_0000_0000"; 
+			when "000100000000" => c <=  std_logic_vector(unsigned(A) sll to_integer (unsigned(B)))+ x"0000_0000_0000_0000";
+			when "000010000000" => c <=  std_logic_vector(unsigned(A) ror to_integer (unsigned(B)))+ x"0000_0000_0000_0000";
+			when "000001000000" => c <=  std_logic_vector(unsigned(A) rol to_integer (unsigned(B)))+ x"0000_0000_0000_0000";
+			when "000000100000" => c <= std_logic_vector((0- unsigned(B))+1)+ x"0000_0000_0000_0000";
+			when "000000010000" => c <=  std_logic_vector(unsigned(B))+ x"0000_0000_0000_0000";
+			when "000000001000" => c <= std_logic_vector((unsigned(A) * unsigned(B)))+ x"0000_0000_0000_0000"; --Booth algorithm 
+			--when "000000001000" => c <= std_logic_vector(booth_mul(unsigned(A),unsigned(B))); --Booth algorithm 
+			when others => c<= NULL;
+		end case;
+		end if;
+	end process;
+end behaviour;
+
+
+	

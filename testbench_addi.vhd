@@ -1,0 +1,258 @@
+LIBRARY ieee;USE ieee.std_logic_1164.all;
+
+
+ENTITY testbench_addi IS 
+END ENTITY testbench_addi;
+
+ARCHITECTURE datapath_tb_arch OF testbench_addi IS
+
+	SIGNAL 	
+            clock_tb,Read_tb,clear_tb,
+            Yin_tb,z_hi_in_tb,z_lo_in_tb,Hiin_tb,Loin_tb,
+            Pcin_tb,IRin_tb,outportin_tb,c_sign_extendedin_tb,
+            strobe_tb,wren_sig_tb,rdem_sig_tb,Rin_tb,Rout_tb,
+            Gra_tb,Grb_tb,Grc_tb,BAout_tb,Cout_tb,hi_out_tb,lo_out_tb,
+            z_hi_out_tb,z_lo_out_tb,PC_out_tb,MDR_out_tb,port_out_tb,MDR_in_tb, MAR_in_tb,Conin_tb: std_logic;
+            
+	SIGNAL ALUcontrol_signals_tb                               :  std_logic_vector(12 downto 0);
+    SIGNAL MData_in_tb,inport_unit_tb,outport_unit_tb       :  std_logic_vector(31 downto 0);
+    
+
+	TYPE State IS (default, Reg_load1a, Reg_load1b, Reg_load2a, Reg_load2b, Reg_load3a, 
+					Reg_load3b, T0, T1, T1_5, T2, T3, T4, T5, T6,T7,T8, T9);
+
+	SIGNAL Present_state:State:= default;
+
+
+
+	COMPONENT combination
+    Port(
+
+        clock                   : in std_logic;
+        read_mux                : in std_logic;
+        clear                   : in std_logic;
+        Yin                     : in std_logic;
+        z_hi_in                 : in std_logic;
+        z_lo_in                 : in std_logic;
+        Hiin                    : in std_logic;
+        Loin                    : in std_logic;
+        Pcin                    : in std_logic;
+        IRin                    : in std_logic;
+        outportin               : in std_logic;
+        c_sign_extendedin       : in std_logic;
+        strobe                  : in std_logic;
+        wren_sig                : in std_LOGIC;
+        Rin                     : in std_logic;
+        Rout                    : in std_logic;
+        Gra                     : in std_logic;
+        Grb                     : in std_logic;
+        Grc                     : in std_logic;
+        BAout                   : in std_logic;
+        Con_in                  : in std_logic;
+        hi_out                  : in std_logic;
+        lo_out                  : in std_logic;
+        z_hi_out                : in std_logic;
+        z_lo_out                : in std_logic;
+        PC_out                  : in std_logic;
+		  MAR_in			    : in std_logic;
+        MDR_out                 : in std_logic;
+        port_out                : in std_logic;
+        MDR_in                  : in std_logic;
+		  c_out						 : in std_logic;
+        ALUcontrol_signals     : in std_logic_vector(12 downto 0);
+        inport_unit             : in std_logic_vector(31 downto 0);
+        outport_unit            : out std_logic_vector(31 downto 0)
+
+        ); 
+	END COMPONENT combination;
+
+BEGIN 
+DUT  : combination 
+PORT MAP (
+
+	--IncPC 		=>		IncPC_tb,
+    clock                =>        clock_tb,                 
+    clear                =>        clear_tb,                 
+    Yin                  =>        Yin_tb,           
+    z_hi_in              =>        z_hi_in_tb,               
+    z_lo_in              =>        z_lo_in_tb,               
+    Hiin                 =>        Hiin_tb,                  
+    Loin                 =>        Loin_tb,                  
+    Pcin                 =>        Pcin_tb,                  
+    IRin                 =>        IRin_tb,                  
+    outportin            =>        outportin_tb,                     
+    c_sign_extendedin    =>        c_sign_extendedin_tb,                             
+    strobe               =>        strobe_tb,                
+    wren_sig             =>        wren_sig_tb,                                        
+    Rin                  =>        Rin_tb,           
+    Rout                 =>        Rout_tb,                  
+    Gra                  =>        Gra_tb,           
+    Grb                  =>        Grb_tb,           
+    Grc                  =>        Grc_tb,           
+    BAout                =>        BAout_tb,                 
+    hi_out               =>        hi_out_tb,                
+    lo_out               =>        lo_out_tb,                
+    z_hi_out             =>        z_hi_out_tb,                      
+    z_lo_out             =>        z_lo_out_tb,                      
+    PC_out               =>        PC_out_tb,                
+    MDR_out              =>        MDR_out_tb,               
+    port_out             =>        port_out_tb,                      
+    MDR_in               =>        MDR_in_tb, 
+	MAR_in               =>        MAR_in_tb, 
+    ALUcontrol_signals      =>    ALUcontrol_signals_tb,                       
+    inport_unit          =>        inport_unit_tb,                   
+    outport_unit         =>        outport_unit_tb,           
+	
+    read_mux             =>        Read_tb,                      
+    Con_in               =>        Conin_tb,
+	 c_out                =>		Cout_tb   
+    );
+
+Clock_process: PROCESS IS
+	BEGIN
+		Clock_tb <= '1', '0' after 10 ns;
+		Wait for 20 ns;
+	END PROCESS Clock_process;
+	
+
+PROCESS (clock_tb)  IS
+begin
+	IF (rising_edge (clock_tb)) THEN   
+		CASE Present_state IS 
+			WHEN Default=>
+			
+					Present_state <= T0 after 40ns;
+
+			
+			WHEN T0 =>
+				
+					Present_state <= T1 after 40ns;
+
+			
+			WHEN T1 =>
+			
+					Present_state <= T2 after 40ns;
+
+			
+			WHEN T2 =>
+			
+					Present_state <= T3 after 40ns;
+
+			
+			WHEN T3=>
+			
+					Present_state <= T4 after 40ns;
+
+			
+			WHEN T4=>
+			
+					Present_state <= T5 after 40ns;
+
+			
+			WHEN T5 =>
+			
+					Present_state <= T6 after 40ns;
+	
+			
+			WHEN T6 =>
+			
+					Present_state <= T7 after 40ns;
+
+			
+			WHEN T7 =>
+			
+					Present_state <= T8 after 40ns; 
+
+			WHEN T8 =>
+			
+					Present_state <= T9 after 40ns;
+			WHEN T9 =>
+			
+					Present_state <= T0 after 40ns; 
+
+			
+			WHEN OTHERS =>END CASE;
+	END IF;
+END PROCESS;
+
+-- "ADDI r2, r1, 26"
+PROCESS (Present_state)IS
+BEGIN
+	CASE Present_state IS       
+		WHEN Default=>
+		--IncPC_tb <= '0';  
+			IRin_tb  <= '0';   
+			MDR_in_tb <= '0';   
+			z_lo_in_tb <= '0';  
+			z_hi_in_tb <= '0';
+			Pcin_tb <='0';     
+			Yin_tb <= '0';  
+			Read_tb <= '0';  
+			ALUcontrol_signals_tb <= "0000000000000";
+			
+			hi_out_tb <= '0';
+			lo_out_tb <= '0';
+			z_lo_out_tb <= '0';
+			z_hi_out_tb <= '0';    
+			PC_out_tb <= '0';
+			MDR_out_tb <= '0';
+			port_out_tb  <= '0';
+			Cout_tb	<= '0';
+			
+		WHEN T0 =>							
+			PC_out_tb<= '1'after 10 ns, '0' after 25 ns;
+			MAR_in_tb<= '1';
+			
+
+		WHEN T1=>
+			MAR_in_tb <='0';
+			ALUcontrol_signals_tb <= "0111111111111";
+			z_lo_in_tb<='1'after 10 ns, '0' after 25 ns;  
+
+		WHEN T2=>
+			ALUcontrol_signals_tb <= "0000000000000";
+			z_lo_in_tb<='0';
+			
+			z_lo_out_tb <= '1'after 10 ns, '0' after 25 ns;
+			MDR_in_tb<='1'after 10 ns, '0' after 25 ns;
+			Read_tb <= '1'after 10 ns, '0' after 25 ns;
+			PCin_tb <= '1'after 10 ns, '0' after 25 ns;	
+		WHEN T3=>	
+			MDR_out_tb<='1';
+			IRin_tb <='1';
+			
+		WHEN T4 =>
+		    IRin_tb <='0';
+			 Mdr_out_tb<='0';
+
+			 Grb_tb <='1'after 10 ns, '0' after 25 ns;
+          Yin_tb<='1'after 10 ns, '0' after 25 ns;
+          Rout_tb <='1'after 10 ns, '0' after 25 ns;
+			-- MAR_in_tb<= '1';	
+			-- MDR_in_tb<='1'after 19 ns, '0' after 40 ns;
+			-- Read_tb <= '1'after 19 ns, '0' after 40 ns;
+            
+        WHEN T5 =>
+			Cout_tb<='1';
+			ALUcontrol_signals_tb <= "0000000000100";	
+			
+			-- BAout_tb<='1'after 10 ns, '0' after 25 ns;
+
+        WHEN T6 =>
+         ALUcontrol_signals_tb <="0000000000000";
+			cout_tb <='0';
+			z_lo_in_tb <='1';
+			when T7=>
+			z_lo_in_tb <='0';
+			Gra_tb <= '1';
+			Rin_tb <='1' ;
+            z_lo_out_tb <='1'after 10 ns, '0' after 25 ns;
+
+			
+
+		WHEN OTHERS => NULL;
+	END CASE;
+END PROCESS;
+
+
+END ARCHITECTURE datapath_tb_arch;

@@ -1,0 +1,13 @@
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+
+
+entity select_and_encoder is
+port {
+			clr, clk,wr: in std_logic;
+			inputD: in std_logic_vector(31 downto 0);
+			outputQ : buffer std_logic_vector(31 downto 0)
+			Rin     : in std_logic;
+			Gra, Grb, Grc : in std_logic;
+			c_sign_sxt
+		}

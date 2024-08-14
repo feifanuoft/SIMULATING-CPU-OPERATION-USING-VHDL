@@ -1,0 +1,24 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity register32 is
+	port(clear, clock,R0in: in std_logic;
+			BusMuxOut: in std_logic_vector(31 downto 0);
+			BusMuxInR0 : out std_logic_vector(31 downto 0)
+			);
+end entity register32;
+
+ARCHITECTURE behaviour OF register32 IS
+BEGIN
+    process(clock, clear)
+    begin
+        if clear = '1' then
+            BusMuxInR0 <= x"00000000";
+
+        elsif rising_edge(clock) then
+            if R0in = '1' then
+                BusMuxInR0 <= BusMuxOut;
+            end if;
+        end if;
+    end process;
+end architecture behaviour;

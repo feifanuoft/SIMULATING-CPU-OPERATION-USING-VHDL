@@ -1,0 +1,44 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+use ieee.numeric_std.all;
+use ieee.std_logic_unsigned.all;
+
+entity CON_FF_Logic is
+    port(
+        IR_in_conff: in std_logic_vector(31 downto 0);
+        BusMuxout : in std_logic_vector(31 downto 0);
+        Con_in    : in std_logic;
+        outputQ    : out std_logic
+    );
+end entity CON_FF_Logic;
+
+architecture behavior of CON_FF_LOGIC is
+	BEGIN
+	process(BusMuxout,IR_in_conff,Con_in)
+		begin
+			if (Con_in = '1') then
+				case IR_in_conff(20 downto 19) is
+					when "00" => 
+						if BusMuxout = x"00000001" then outputQ <= '1'; --branch if equal to 0
+						else outputQ <= '0';
+						end if;
+					when "01" => 
+						if BusMuxout = x"00000001" then outputQ <= '1'; --branch if equal to nonzero
+						else outputQ <= '0';
+						end if;
+					when "10" =>
+						if BusMuxout = x"00000001" then outputQ <= '1'; --branch if positive
+						else outputQ <= '0';
+						end if;
+					when "11" =>
+						if BusMuxout < x"00000000" then outputQ <= '1'; --branch if negative
+						else outputQ <= '0';
+						end if;
+					when others => NULL;
+				end case;
+			else 
+            outputQ <= '1';
+			end if;
+	end process;
+END; 
+

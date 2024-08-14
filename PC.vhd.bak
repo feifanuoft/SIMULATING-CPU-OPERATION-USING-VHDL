@@ -1,0 +1,30 @@
+LIBRARY ieee;
+use IEEE.std_logic_1164.all;
+
+entity PC is
+    generic(
+        VAL : std_logic_vector(31 downto 0):= x"00000000"
+    );
+	port(clr, clk, wr: in std_logic;
+			inputD: in std_logic_vector(31 downto 0);
+			outputQ : buffer std_logic_vector(31 downto 0)
+			);
+end entity PC;
+
+ARCHITECTURE behaviour OF PC IS
+    signal x : std_logic_vector(31 downto 0);
+BEGIN
+		x<=VAL;
+    process(clk, clr)
+    begin
+        if clr = '1' then
+            outputQ <= x"00000000";
+
+        elsif rising_edge(clk) then
+            if wr <= '1' then
+                --outputQ <= inputD;
+					 outputQ <= x;
+            end if;
+        end if;
+    end process;
+end architecture behaviour;

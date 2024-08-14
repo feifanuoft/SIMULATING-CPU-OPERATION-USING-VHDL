@@ -1,0 +1,214 @@
+
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity combination is
+	port(		clock, read_mux : in std_logic;
+				clear : in std_logic;
+				R0in: in std_logic;
+				R1in: in std_logic;
+				R2in: in std_logic;
+				R3in: in std_logic;
+				R4in: in std_logic;
+				R5in: in std_logic;
+				R6in: in std_logic;
+				R7in: in std_logic;
+				R8in: in std_logic;
+				R9in: in std_logic;
+				R10in: in std_logic;
+				R11in: in std_logic;
+				R12in: in std_logic;
+				R13in: in std_logic;
+				R14in: in std_logic;
+				R15in: in std_logic;
+				Yin: in std_logic;
+				Zin: in std_logic;
+				Hiin: in std_logic;
+				Loin: in std_logic;
+				Pcin: in std_logic;
+				IRin: in std_logic;
+				      
+				hi_out: in std_logic;
+				lo_out: in std_logic;
+				z_hi_out: in std_logic;
+				z_lo_out: in std_logic;
+				r00_out: in std_logic;
+				r01_out: in std_logic;
+				r02_out: in std_logic;
+				r03_out: in std_logic;
+				r04_out: in std_logic;
+				r05_out: in std_logic;
+				r06_out: in std_logic;
+				r07_out: in std_logic;
+				r08_out: in std_logic;
+				r09_out: in std_logic;
+				r10_out: in std_logic;
+				r11_out: in std_logic;
+				r12_out: in std_logic;
+				r13_out: in std_logic;
+				r14_out: in std_logic;
+				r15_out: in std_logic;
+				PC_out: in std_logic;
+				MDR_out: in std_logic;
+				port_ouR0int: in std_logic;
+				c_out,MDR_in: in std_logic;
+				control_signals	: in std_logic_vector(11 downto 0);
+
+
+				hi_in, lo_in, z_hi_in, z_lo_in,
+				PC_in, port_in, c_sign_extended,
+				MData_in: in std_logic_vector(31 downto 0)
+				
+
+			);
+end combination;
+
+architecture structural of combination is
+Component register32 is
+port(clr,clk,wr: in std_logic;
+		inputD: IN std_logic_vector(31 downto 0); --BusMuxOut--
+		outputQ: out std_logic_vector(31 downto 0)  --BusMuxIn-Rn--
+		); 
+end component register32;
+
+COMPONENT register64 is
+	PORT(clr, clk,wr : IN STD_LOGIC;
+		 inputD: in std_logic_vector(63 downto 0);
+		 outputHi : buffer std_logic_vector(31 downto 0);
+		 outputLo : buffer std_logic_vector(31 downto 0)
+	);
+	end compONENT register64;
+
+
+component busMux is
+	PORT(
+		r00_in, r01_in, r02_in, r03_in,
+		r04_in, r05_in, r06_in, r07_in, 
+		r08_in, r09_in, r10_in, r11_in, 
+		r12_in, r13_in, r14_in, r15_in, 
+		hi_in, lo_in, z_hi_in, z_lo_in,
+		PC_in, BusMuxIn_MDR,port_in, c_sign_extended	:	IN std_logic_vector (31 downto 0);
+		s_in		:	IN std_logic_vector(4 downto 0);
+		BusMuxOut:	out std_logic_vector(31 downto 0)
+		);
+		end component busMux;
+	
+		
+component encoder is
+	PORT(
+		r00_out, r01_out, r02_out, r03_out,
+		r04_out, r05_out, r06_out, r07_out,
+		r08_out, r09_out, r10_out, r11_out,
+		r12_out, r13_out, r14_out, r15_out,
+		hi_out, lo_out, z_hi_out, z_lo_out,
+		PC_out, MDR_out, port_out, c_out	: IN std_logic;
+		s_out	:	OUT std_logic_vector(4 downto 0)
+		);
+		end component encoder;
+				
+component MDR is
+port(busMuxOut, MDataIn		:	IN std_logic_vector(31 downto 0);
+	clr,clk,MDRread, mdr_in		:	IN std_logic;
+	outputQ							:	Out std_logic_vector(31 downto 0)
+	);
+end component MDR;
+
+component ALU is 
+port(	A,B					: in std_logic_vector(31 downto 0);
+		control_signals				: in std_logic_vector(11 downto 0);
+		C							: out std_logic_vector(63 downto 0); --
+		clk							: in std_logic);
+end component ALU;
+
+signal s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,BMIn_MDR, BusMuxOut,A,B,outputHi,outputLo,spc:std_logic_vector(31 downto 0) ;
+signal C:std_logic_vector(63 downto 0);
+signal in0, in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11, in12, in13,
+	   in14, in15, in16, in17, in18, in19, in20, in21, in22, in23, in24, in25, in26, in27,
+	   in28, in29, in30, in31: std_logic;
+signal sout:std_logic_vector(4 downto 0);
+begin
+
+	--register 
+	reg0: register32 port map(clr=>clear,clk=>clock,wr=>R0in,outputQ=>s0,inputD=>busMuxOut); 
+	reg1: register32 port map(clr=>clear,clk=>clock,wr=>R1in,outputQ=>s1,inputD=>busMuxOut);
+	reg2: register32 port map(clr=>clear,clk=>clock,wr=>R2in,outputQ=>s2,inputD=>busMuxOut);
+	reg3: register32 port map(clr=>clear,clk=>clock,wr=>R3in,outputQ=>s3,inputD=>busMuxOut);
+	reg4: register32 port map(clr=>clear,clk=>clock,wr=>R4in,outputQ=>s4,inputD=>busMuxOut);
+	reg5: register32 port map(clr=>clear,clk=>clock,wr=>R5in,outputQ=>s5,inputD=>busMuxOut);
+	reg6: register32 port map(clr=>clear,clk=>clock,wr=>R6in,outputQ=>s6,inputD=>busMuxOut);
+	reg7: register32 port map(clr=>clear,clk=>clock,wr=>R7in,outputQ=>s7,inputD=>busMuxOut);
+	reg8: register32 port map(clr=>clear,clk=>clock,wr=>R8in,outputQ=>s8,inputD=>busMuxOut);
+	reg9: register32 port map(clr=>clear,clk=>clock,wr=>R9in,outputQ=>s9,inputD=>busMuxOut);
+	reg10: register32 port map(clr=>clear,clk=>clock,wr=>R10in,outputQ=>s10,inputD=>busMuxOut);
+	reg11: register32 port map(clr=>clear,clk=>clock,wr=>R11in,outputQ=>s11,inputD=>busMuxOut);
+	reg12: register32 port map(clr=>clear,clk=>clock,wr=>R12in,outputQ=>s12,inputD=>busMuxOut);
+	reg13: register32 port map(clr=>clear,clk=>clock,wr=>R13in,outputQ=>s13,inputD=>busMuxOut);
+	reg14: register32 port map(clr=>clear,clk=>clock,wr=>R14in,outputQ=>s14,inputD=>busMuxOut);
+	reg15: register32 port map(clr=>clear,clk=>clock,wr=>R15in,outputQ=>s15,inputD=>busMuxOut);
+	regY: register32 port map(clr=>clear,clk=>clock,wr=>Yin,outputQ=>A,inputD=>busMuxOut);
+	regZ: register64 port map(clr=>clear,clk=>clock,wr=>Zin,outputHi=>outputHi,outputLo=>outputLo,inputD => C );
+	regzHi: register32 port map(clr=>clear,clk=>clock,wr=>Zin,outputQ=>busMuxOut,inputD=>outputHi);
+	regzLo: register32 port map(clr=>clear,clk=>clock,wr=>Zin,outputQ=>busMuxOut,inputD=>outputLo);
+	regHi: register32 port map(clr=>clear,clk=>clock,wr=>Hiin,outputQ=>busMuxOut,inputD=>outputHi);
+	regLo: register32 port map(clr=>clear,clk=>clock,wr=>Loin,outputQ=>busMuxOut,inputD=>outputLo);
+	PC: register32 port map(clr=>clear,clk=>clock,wr=>Pcin, outputQ=>busMuxOut,inputD=>busMuxOut);
+	IR: register32 port map(clr=>clear,clk=>clock,wr=>IRin ,inputD=>busMuxOut);
+	
+	--encoder 
+
+	encoder1: encoder port map(	r00_out=>r00_out,
+											r01_out=>r00_out,
+											r02_out=>r00_out,
+											r03_out=>r00_out,
+											r04_out=>r04_out,
+											r05_out=>r05_out,
+											r06_out=>r06_out,
+											r07_out=>r07_out,
+											r08_out=>r08_out,
+											r09_out=>r09_out,
+											r10_out=>r10_out,
+											r11_out=>r11_out,
+											r12_out=>r12_out,
+											r13_out=>r13_out,
+											r14_out=>r14_out,
+											r15_out=>r15_out,
+											hi_out=>hi_out,
+											lo_out=>lo_out,
+											z_hi_out=>z_hi_out,
+											z_lo_out=>z_lo_out,
+											PC_out=>PC_out,
+											MDR_out=>MDR_out,
+											port_out => port_out,
+											c_out => c_out,
+											s_out => sout);
+	
+
+
+
+	--32:1 Multiplexer BusMux
+	busMux1: busMux port map(	r00_in => s0, r01_in => s1, r02_in => s2, r03_in => s4,
+								r04_in => s5, r05_in => s5, r06_in => s6, r07_in => s7, 
+								r08_in => s8, r09_in => s9, r10_in => s10, r11_in => s11, 
+								r12_in => s12, r13_in => s13, r14_in => s14, r15_in => s15, 
+								hi_in => hi_in, lo_in => lo_in, z_hi_in=>z_hi_in, z_lo_in=>z_lo_in,
+								PC_in=>PC_in, port_in=>port_in, c_sign_extended=>c_sign_extended,
+								s_in => sout, BusMuxOut => BusMuxOut,
+								BusMuxIn_MDR => BMIn_MDR);
+
+	--MDR
+	MDR1: MDR port map( busMuxOut => busMuxOut,
+								MDataIn => MData_in , 
+								clr => clear, clk => clock ,
+								mdr_in => MDR_in, 
+								MDRread => read_mux,
+								outputQ=>BMIn_MDR);
+								
+
+	ALU1: ALU port map(	A => A ,B => B,		
+						control_signals	=> control_signals	,		
+						C => C	,						
+						clk	=> clock);
+						
+	
+end architecture structural;
